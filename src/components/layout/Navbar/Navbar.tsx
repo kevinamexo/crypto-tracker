@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import "./Navbar.css";
 import Button from "../../Button/Button";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [showMenuIcon, setShowMenuIcon] = useState<boolean>(false);
@@ -45,9 +46,15 @@ const Navbar = () => {
       {showMenuIcon === false && (
         <section className="navbar-section2">
           <ul>
-            <li className="navbar-section2-item">Prices</li>
-            <li className="navbar-section2-item">Cryptocurrency news</li>
-            <li className="navbar-section2-item">API</li>
+            <Link to="/coins">
+              <li className="navbar-section2-item">Prices</li>
+            </Link>
+            <Link to="/coins">
+              <li className="navbar-section2-item">Cryptocurrency news</li>
+            </Link>
+            <Link to="/coins">
+              <li className="navbar-section2-item">API</li>
+            </Link>
           </ul>
         </section>
       )}

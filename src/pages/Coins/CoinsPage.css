@@ -1,0 +1,6 @@
+.coinsPage{
+    height:calc(100vh - 65px);
+    background-color:blue;
+    padding-left:  10%;
+  padding-right: 10%;
+}
