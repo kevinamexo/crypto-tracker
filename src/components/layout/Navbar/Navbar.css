@@ -1,0 +1,122 @@
+.navbar {
+  height: 65px;
+  padding: 0px 10%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-bottom: 1px solid rgb(228, 228, 228);
+}
+
+.navbar-section1,
+.navbar-section3,
+.navbar-section2 ul{
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.navbar-section2{
+  width:45%;
+  /* background-color:   grey; */
+}
+.navbar-section2  ul{
+  list-style-type: none;
+  justify-content: space-evenly;
+  width: 100%;
+}
+.navbar-section2-item{
+  color:var(--primaryfont);
+  font-weight:600;
+}
+.navbar-section3 {
+  width: 220px;
+  justify-content: flex-end;
+  display:flex;
+  align-items: center;
+}
+.navbar-signin {
+  color: var(--primaryfont);
+  font-size: 16px;
+  font-weight: 700;
+  margin-right: 25px;
+}
+
+.navbar-logo {
+  font-size: 24px;
+  color: var(--coinbaseblue);
+  margin: 0;
+  font-weight: 900;
+}
+
+.navbar-logo,
+.navbar-signin,
+.navbar button {
+  cursor: pointer;
+}
+
+.navbar-signin:hover {
+  color: var(--coinbaseblue);
+}
+.navbar-signin:hover {
+  color: var(--coinbaseblue);
+}
+.navbar-signin-primary:hover {
+  background-color: var(--coinbasebluehover) !important;
+}
+.navbar-signin-primary {
+  margin-right: 20px;
+}
+
+.navbar-openClose-menu {
+  font-size: 25px;
+  color: #050f19;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px;
+  z-index: 20;
+}
+
+.navbar-menu-showMenu,
+.navbar-menu{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  list-style-type: none;
+  width: 100vw;
+  padding: 80px 10px 10px 10px;
+  z-index: 10;
+}
+.navbar-menu {
+  /* top: -100vh; */
+  height: 0vh;
+  transition: all 1s ease-in-out 0s, visibility 0s linear 0.5s,
+  z-index 0s linear 0.01s;
+
+}
+.navbar-menu-showMenu {
+  top: 0;
+  height: 100vh;
+}
+
+.navbar-menu-item {
+  padding: 20px 24px;
+  font-weight: 600;
+  font-size: 17px;
+}
+.authButtons {
+  margin-top: 50px;
+}
+
+@media screen and (max-width: 1270px) {
+  .navbar {
+    padding: 15px 30px;
+  }
+}
+
+/* 1050 */
