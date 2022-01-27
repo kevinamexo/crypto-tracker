@@ -5,6 +5,7 @@
   --coinbasebluelighthover: #aabee9;
   --white: #ffffff;
   --primaryfont: #050f19;
+  --primaryColor:#fff;
 }
 
 * {
@@ -16,4 +17,7 @@
 
 .App {
   position: relative;
+  padding-top:100px;
+  padding-left:  10%;
+  padding-right: 10%;
 }

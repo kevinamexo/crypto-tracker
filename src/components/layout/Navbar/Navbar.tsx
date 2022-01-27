@@ -77,10 +77,18 @@ const Navbar = () => {
       </section>
       {showMenuIcon && showMenu === true && (
         <ul className={`navbar-menu${showMenu && "-showMenu"}`}>
-          <li className="navbar-menu-item">Prices</li>
-          <li className="navbar-menu-item">Cryptocurrency news</li>
-          <li className="navbar-menu-item">API</li>
-          <li className="navbar-menu-item">Github Repository</li>
+          <li className="navbar-menu-item">
+            <span>Prices</span>
+          </li>
+          <li className="navbar-menu-item">
+            <span>Cryptocurrency news</span>
+          </li>
+          <li className="navbar-menu-item">
+            <span>API</span>
+          </li>
+          <li className="navbar-menu-item">
+            <span>CGithub Repository</span>
+          </li>
           <div className="authButtons">
             <li className="navbar-menu-item">
               <Button
