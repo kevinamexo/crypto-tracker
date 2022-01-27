@@ -48,8 +48,8 @@ const Coins: React.FC = () => {
       offset: "0",
     },
     headers: {
-      "x-rapidapi-host": "coinranking1.p.rapidapi.com",
-      "x-rapidapi-key": "16b19d757bmsh1c2316bb5ece6b7p1286c6jsn227702a96e01",
+      "x-rapidapi-host": "",
+      "x-rapidapi-key": "",
     },
   };
 
