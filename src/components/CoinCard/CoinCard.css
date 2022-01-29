@@ -1,0 +1,20 @@
+.coinCard {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--primaryBorder);
+}
+
+.coinCard-title {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.coinCard-logo {
+  height: 30px;
+  width: 30px;
+  margin: 10px 0;
+}
+
+.coinCard-symbol {
+  font-weight: 700;
+}
