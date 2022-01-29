@@ -30,7 +30,7 @@ export type activeParameterType = keyof RankParameter;
 const Coins: React.FC = () => {
   const [loadingCoins, setLoadingCoins] = useState<boolean | null>(null);
   const [coins, setCoins] = useState<Coin[]>([]);
-  const [stats, setStats] = useState<Stats | {}>({});
+  const [stats, setStats] = useState<Stats>({} as Stats);
   const [sortBy, setSortBy] = useState<activeParameterType>("listedAt");
   const [order, setOrder] = useState<"desc" | "asc">("desc");
   const activeParameterName = parameters[sortBy];
@@ -74,6 +74,30 @@ const Coins: React.FC = () => {
   return (
     <div className="coinsPage">
       <section className="coinMarketSummary">
+        <p className="coinPage-marketSummary__title">Global Statistics</p>
+        <div className="globalMarketSummary">
+          <ul className="globalMarketStat">
+            <li className="stat">
+              <h2>{stats && (stats.totalCoins / 1000).toFixed(2)}k</h2>
+              <p>Total coins</p>
+            </li>
+            <li className="stat">
+              <h2>
+                {stats && (stats.totalMarketCap / 1000000000).toFixed(2)}T
+              </h2>
+              <p>Total MarketCap</p>
+            </li>
+            <li className="stat">
+              <h2>{stats && (stats.totalMarkets / 1000).toFixed(1)}k</h2>
+              <p>Total Markets</p>
+            </li>
+            <li className="stat">
+              <h2>{stats && stats.totalExchanges}</h2>
+              <p>Total Exchanges</p>
+            </li>
+          </ul>
+        </div>
+
         <p className="coinPage-marketSummary__title">
           Market summary - 24 hours
         </p>
@@ -87,7 +111,7 @@ const Coins: React.FC = () => {
         </ul>
       </section>
       {/* <CoinCard category="24hVolume" /> */}
-      <h2>Coin ranking by {activeParameterName}</h2>
+      <h2 style={{ marginTop: "50px" }}>Assets</h2>
       <p> {process.env.REACT_APP_RAPID_API_HOST}</p>
 
       {loadingCoins === true && <h3>Loading Coins</h3>}

@@ -60,10 +60,42 @@ const CoinCard: React.FC<CoinCardProps> = ({ category, title }) => {
         alt={coinData.name}
       />
       <p className="coinCard-symbol">{coinData.symbol}</p>
-      <p className="coinCard-categoryDetail">
-        {/* {category === "listedAt" &&
-          new Date(coinData.listedAt * 1000).toDateString()} */}
-      </p>
+      <div className="coinCard-categoryDetail">
+        {category === "listedAt" && coinData && coinData.listedAt && (
+          <>
+            <p className="value ">Volume </p>
+            <p>{new Date(coinData.listedAt * 1000).toDateString()}</p>
+          </>
+        )}
+        {category === "24hVolume" && coinData && coinData["24hVolume"] && (
+          <>
+            {
+              <p className="value">
+                {Math.round(Number(coinData["24hVolume"]) / 1000000000)}T{" "}
+              </p>
+            }{" "}
+            <p>Added </p>
+          </>
+        )}
+
+        {category === "marketCap" && coinData && coinData["marketCap"] && (
+          <>
+            {
+              <p className="value">
+                {Number(coinData["marketCap"]) / 1000000000}T{" "}
+              </p>
+            }{" "}
+            <p>cap </p>
+          </>
+        )}
+
+        {category === "change" && coinData && coinData["change"] && (
+          <>
+            {<p className="value">{Number(coinData["change"]) / 100}% </p>}{" "}
+            <p>change </p>
+          </>
+        )}
+      </div>
     </div>
   );
 };
