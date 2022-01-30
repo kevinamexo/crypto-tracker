@@ -76,6 +76,23 @@
   align-items: center;
 }
 
+.assets-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 60px;
+}
+
+.assets-table-header .tablefilterTimePeriods {
+  list-style-type: none;
+  display: flex;
+}
+
+.assets-table-header .tablefilterTimePeriods .timeLabel {
+  margin: 0 20px;
+  font-weight: 600;
+  color: rgb(126, 126, 126);
+}
 .assets-table {
   margin-top: 20px;
 }

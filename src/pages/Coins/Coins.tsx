@@ -167,8 +167,8 @@ const Coins: React.FC = () => {
         </ul>
       </section>
       {/* <CoinCard category="24hVolume" /> */}
-      <div className="assets-table">
-        <p style={{ marginTop: "50px", fontSize: "20px" }}> All Assets</p>
+      <div className="assets-table-header">
+        <p style={{ fontSize: "20px" }}> All Assets</p>
         <ul className="tablefilterTimePeriods">
           <li className="timeLabel">1H</li>
           <li className="timeLabel">1D</li>

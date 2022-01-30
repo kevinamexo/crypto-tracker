@@ -130,11 +130,19 @@
   .navbar {
     padding: 15px 30px;
   }
+  .navbar-menu-showMenu {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
 }
 
 @media screen and (min-width: 1550px) {
   .navbar {
     padding: 0px 15%;
+  }
+  .navbar-menu-showMenu {
+    padding-left: 15%;
+    padding-right: 15%;
   }
 }
 
