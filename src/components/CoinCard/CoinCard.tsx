@@ -82,7 +82,7 @@ const CoinCard: React.FC<CoinCardProps> = ({ category, title }) => {
           <>
             {
               <p className="value">
-                {Number(coinData["marketCap"]) / 1000000000}T{" "}
+                {(Number(coinData["marketCap"]) / 1000000000).toFixed(2)}T{" "}
               </p>
             }{" "}
             <p>cap </p>
@@ -91,7 +91,11 @@ const CoinCard: React.FC<CoinCardProps> = ({ category, title }) => {
 
         {category === "change" && coinData && coinData["change"] && (
           <>
-            {<p className="value">{Number(coinData["change"]) / 100}% </p>}{" "}
+            {
+              <p className="value">
+                {(Number(coinData["change"]) / 100).toFixed(2)}%{" "}
+              </p>
+            }{" "}
             <p>change </p>
           </>
         )}

@@ -14,7 +14,7 @@ export interface Coin {
   name: string;
   color: null | string;
   iconUrl: string;
-  marketCap: string;
+  marketCap: string | null;
   price: string;
   listedAt: number;
   tier: number;

@@ -1,23 +1,34 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Coin, CoinsResponse, Data, Stats } from "./CoinsResponseTypes";
+import { Coin, CoinsResponse, Stats } from "./CoinsResponseTypes";
 import CoinCard from "../../components/CoinCard/CoinCard";
 import "./CoinsPage.css";
+import { BiSearch } from "react-icons/bi";
+import BasicTable from "./CoinsTable";
+import { useDispatch } from "react-redux";
+import {
+  setLoadingAssets,
+  setTableData,
+} from "../../redux/app/features/tables/assetsTableSlice";
 
-interface RankParameter {
+export interface RankParameter {
   marketCap: string;
   "24hVolume": string;
   change: string;
   listedAt: string;
+  name?: string;
+  price?: string;
 }
 
-type RankParameters = Record<keyof RankParameter, string>;
+export type RankParameters = Record<keyof Partial<RankParameter>, string>;
 
-const parameters: RankParameters = {
+export const parameters: RankParameters = {
   marketCap: "Market Cap",
   "24hVolume": "24hr Volume",
   change: "Change",
   listedAt: "Time listed",
+  name: "Name",
+  price: "Price",
 };
 export interface FetchCoinsOptions {
   method: "GET";
@@ -30,10 +41,12 @@ export type activeParameterType = keyof RankParameter;
 const Coins: React.FC = () => {
   const [loadingCoins, setLoadingCoins] = useState<boolean | null>(null);
   const [coins, setCoins] = useState<Coin[]>([]);
+  const [searchValue, setSearchValue] = useState<string>("");
   const [stats, setStats] = useState<Stats>({} as Stats);
   const [sortBy, setSortBy] = useState<activeParameterType>("listedAt");
   const [order, setOrder] = useState<"desc" | "asc">("desc");
-  const activeParameterName = parameters[sortBy];
+  // const activeParameterName = parameters[sortBy];
+  const dispatch = useDispatch();
 
   let fetchCoinOptions: FetchCoinsOptions = {
     method: "GET",
@@ -53,8 +66,16 @@ const Coins: React.FC = () => {
     },
   };
 
+  const tableRows: string[] = [
+    "name",
+    "marketCap",
+    "24hVolume",
+    "change",
+    "listedAt",
+  ];
   useEffect(() => {
     setLoadingCoins(true);
+    dispatch(setLoadingAssets(true));
     axios
       .get<CoinsResponse>(fetchCoinOptions.url, {
         headers: fetchCoinOptions.headers,
@@ -64,17 +85,45 @@ const Coins: React.FC = () => {
         console.log(response);
         setCoins(response.data.data.coins);
         setStats(response.data.data.stats);
+        const tableData = response.data.data.coins.map((r) => {
+          let tmpObj: Record<string, any> = {};
+          tableRows.map((rowName) => {
+            tmpObj[`${rowName}`] = r[rowName as keyof Coin];
+          });
+          return tmpObj;
+        });
+        console.log(tableData);
+        dispatch(setTableData(tableData));
+        // console.log(x);
+        // console.log(x)
       })
       .catch((err) => {
         console.log(err);
       });
     setLoadingCoins(false);
+    dispatch(setLoadingAssets(false));
   }, []);
+
+  useEffect(() => {
+    if (!stats) return;
+  }, [stats]);
 
   return (
     <div className="coinsPage">
       <section className="coinMarketSummary">
-        <p className="coinPage-marketSummary__title">Global Statistics</p>
+        <div className="header">
+          <p className="coinPage-marketSummary__title">Global Statistics</p>
+          <div className="search-input">
+            <input
+              name="searchValue"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              className="coinPageSearch"
+              placeholder="Search"
+            />
+            <BiSearch className="coinPageSearchIcon" />
+          </div>
+        </div>
         <div className="globalMarketSummary">
           <ul className="globalMarketStat">
             <li className="stat">
@@ -102,31 +151,31 @@ const Coins: React.FC = () => {
           Market summary - 24 hours
         </p>
         <ul className="coinMarketSummary-coins">
-          {Object.keys(parameters).map((parameter) => (
-            <CoinCard
-              category={parameter as keyof RankParameters}
-              title={parameters[parameter as keyof RankParameters]}
-            />
-          ))}
+          {Object.keys(parameters).map((parameter, key) => {
+            if (parameter !== "name") {
+              return (
+                <CoinCard
+                  key={key}
+                  category={parameter as keyof RankParameters}
+                  title={parameters[parameter as keyof RankParameters]}
+                />
+              );
+            }
+          })}
         </ul>
       </section>
       {/* <CoinCard category="24hVolume" /> */}
       <h2 style={{ marginTop: "50px" }}>Assets</h2>
-      <p> {process.env.REACT_APP_RAPID_API_HOST}</p>
 
-      {loadingCoins === true && <h3>Loading Coins</h3>}
-      {loadingCoins === false && <h3>Loaded Coins</h3>}
-      <p>{coins.length}</p>
-      <p></p>
-
-      <p>This is the coins page</p>
+      {/* <p>This is the coins page</p>
       {coins &&
         coins.length > 0 &&
         coins.map((c) => (
           <p>
             {c.name} - {c.price}
           </p>
-        ))}
+        ))} */}
+      <BasicTable />
     </div>
   );
 };

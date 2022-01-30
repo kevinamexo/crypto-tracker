@@ -13,6 +13,34 @@
   padding: 10px 40px;
   margin-top: 10px;
 }
+
+.coinMarketSummary .header {
+  display: flex;
+  align-items: flex-end;
+  /* background-color: red; */
+  justify-content: space-between;
+}
+
+.search-input {
+  position: relative;
+  width: 50%;
+}
+.coinPageSearchIcon {
+  position: absolute;
+  left: 15px;
+  top: 12px;
+  font-size: 25px;
+  color: rgb(143, 143, 143);
+}
+.coinPageSearch {
+  width: 100%;
+  padding: 13px 10px;
+  font-size: 16px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding-left: 55px;
+}
+
 .coinMarketSummary .title {
   font-size: 20px;
   font-weight: 700;

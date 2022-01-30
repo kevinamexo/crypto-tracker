@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import layoutReducer from "./features/layout/layoutSlice";
+import assetsTableReducer from "./features/tables/assetsTableSlice";
 export const store = configureStore({
   reducer: {
     layout: layoutReducer,
+    assetsTable: assetsTableReducer,
   },
 });
 

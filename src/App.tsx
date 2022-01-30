@@ -7,8 +7,8 @@ import axios from "axios";
 
 const Home: React.FC = () => {
   return (
-    <div>
-      <p>This is the home page</p>
+    <div className="homePage">
+      <div className="globalStats"></div>
     </div>
   );
 };
