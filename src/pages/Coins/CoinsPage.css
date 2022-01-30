@@ -11,7 +11,7 @@
   border-radius: 10px;
   min-height: 100px;
   padding: 10px 40px;
-  margin-top: 10px;
+  margin-top: 25px;
 }
 
 .coinMarketSummary .header {
@@ -74,6 +74,25 @@
   margin-top: 20px;
   display: flex;
   align-items: center;
+}
+
+.assets-table {
+  margin-top: 20px;
+}
+
+.tableValueCell {
+  display: flex;
+  align-items: center;
+}
+
+.tableValueCell-logo {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+}
+
+.tableValueCell-value {
+  margin-left: 10px;
 }
 
 @media screen and (min-width: 1550px) {

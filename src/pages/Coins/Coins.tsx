@@ -43,7 +43,7 @@ const Coins: React.FC = () => {
   const [coins, setCoins] = useState<Coin[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const [stats, setStats] = useState<Stats>({} as Stats);
-  const [sortBy, setSortBy] = useState<activeParameterType>("listedAt");
+  const [sortBy, setSortBy] = useState<activeParameterType>("change");
   const [order, setOrder] = useState<"desc" | "asc">("desc");
   // const activeParameterName = parameters[sortBy];
   const dispatch = useDispatch();
@@ -68,10 +68,12 @@ const Coins: React.FC = () => {
 
   const tableRows: string[] = [
     "name",
+    "price",
     "marketCap",
     "24hVolume",
     "change",
     "listedAt",
+    "iconUrl",
   ];
   useEffect(() => {
     setLoadingCoins(true);
@@ -165,17 +167,18 @@ const Coins: React.FC = () => {
         </ul>
       </section>
       {/* <CoinCard category="24hVolume" /> */}
-      <h2 style={{ marginTop: "50px" }}>Assets</h2>
-
-      {/* <p>This is the coins page</p>
-      {coins &&
-        coins.length > 0 &&
-        coins.map((c) => (
-          <p>
-            {c.name} - {c.price}
-          </p>
-        ))} */}
-      <BasicTable />
+      <div className="assets-table">
+        <p style={{ marginTop: "50px", fontSize: "20px" }}> All Assets</p>
+        <ul className="tablefilterTimePeriods">
+          <li className="timeLabel">1H</li>
+          <li className="timeLabel">1D</li>
+          <li className="timeLabel">1W</li>
+          <li className="timeLabel">1H</li>
+        </ul>
+      </div>
+      <div className="assets-table">
+        <BasicTable sortBy={sortBy} />
+      </div>
     </div>
   );
 };

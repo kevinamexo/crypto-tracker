@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
+import TableSortLabel from "@material-ui/core/TableSortLabel";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { Coin } from "./CoinsResponseTypes";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/app/store";
+import { setTableData } from "../../redux/app/features/tables/assetsTableSlice";
 import {
   activeParameterType,
   RankParameter,
@@ -19,6 +21,7 @@ import {
 type RowNames = keyof Coin;
 const rowNames: activeParameterType[] = [
   "name",
+  "price",
   "marketCap",
   "24hVolume",
   "change",
@@ -81,25 +84,85 @@ const rows: Partial<Coin>[] = [
   },
 ];
 
-export default function BasicTable() {
+const sortArray = (
+  arr: Array<any>,
+  property: string,
+  sortBy: "asc" | "desc"
+) => {
+  switch (sortBy) {
+    case "asc":
+      console.log([...arr].sort((a, b) => a[property] - b[property]));
+      return [...arr].sort((a, b) => a[property] - b[property]);
+    case "desc":
+      console.log([...arr].sort((a, b) => b[property] - a[property]));
+      return [...arr].sort((a, b) => b[property] - a[property]);
+    default:
+      return [...arr];
+      break;
+  }
+};
+
+const BasicTable: React.FC<{ sortBy: string }> = ({ sortBy }) => {
   const { loadingAssets, tableData } = useSelector(
     (state: RootState) => state.assetsTable
   );
+  const dispatch = useDispatch();
+
+  const [orderDirection, setOrderDirection] = useState<"desc" | "asc">("asc");
+  const [activeColumn, setActiveColumn] = useState<string>(sortBy);
+  const handleSortRequest = (rowName: activeParameterType) => {
+    console.log(rowName);
+    setActiveColumn(rowName);
+    setOrderDirection(orderDirection === "asc" ? "desc" : "asc");
+    let newData = setTableData(sortArray(tableData, rowName, orderDirection));
+    console.log(newData);
+    dispatch(setTableData(newData.payload));
+  };
   return (
     <TableContainer component={Paper}>
       <TableContainer aria-label="simple table">
         <TableHead>
-          <TableRow>
-            {rowNames.map((rowName, index) => (
-              <TableCell key={index}>{parameters[rowName]}</TableCell>
-            ))}
-          </TableRow>
+          {rowNames.map((rowName, index) => (
+            <TableCell
+              key={index}
+              onClick={(
+                e: React.MouseEvent<HTMLTableHeaderCellElement, MouseEvent>
+              ) => handleSortRequest(rowName)}
+            >
+              <TableRow>
+                <TableSortLabel
+                  active={activeColumn === rowName}
+                  direction={orderDirection}
+                >
+                  <div>{parameters[rowName]}</div>
+                </TableSortLabel>
+              </TableRow>
+            </TableCell>
+          ))}
         </TableHead>
         <TableBody>
           {tableData.map((row, index: number) => (
             <TableRow key={index}>
               {rowNames.map((rowName, index) => (
-                <TableCell>{row[rowName] ?? "-"}</TableCell>
+                <TableCell>
+                  <div className="tableValueCell ">
+                    {rowName === "name" && (
+                      <img
+                        className="tableValueCell-logo"
+                        src={row["iconUrl"]}
+                      />
+                    )}
+                    <p
+                      className={
+                        rowName === "name" ? "tableValueCell-value" : ""
+                      }
+                    >
+                      {rowName === "listedAt"
+                        ? new Date(row[rowName] * 1000).toDateString()
+                        : row[rowName] ?? "-"}
+                    </p>
+                  </div>
+                </TableCell>
               ))}
             </TableRow>
           ))}
@@ -107,4 +170,6 @@ export default function BasicTable() {
       </TableContainer>
     </TableContainer>
   );
-}
+};
+
+export default BasicTable;

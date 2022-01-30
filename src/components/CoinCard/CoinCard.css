@@ -1,5 +1,5 @@
 .coinCard {
-  padding: 15px;
+  padding: 15px 15px 35px 15px;
   border-radius: 10px;
   border: 1px solid var(--primaryBorder);
 }
