@@ -5,11 +5,14 @@ import CoinCard from "../../components/CoinCard/CoinCard";
 import "./CoinsPage.css";
 import { BiSearch } from "react-icons/bi";
 import BasicTable from "./CoinsTable";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setLoadingAssets,
   setTableData,
+  setTimePeriod,
+  TableTimePeriod,
 } from "../../redux/app/features/tables/assetsTableSlice";
+import { RootState } from "../../redux/app/store";
 
 export interface RankParameter {
   marketCap: string;
@@ -45,6 +48,7 @@ const Coins: React.FC = () => {
   const [stats, setStats] = useState<Stats>({} as Stats);
   const [sortBy, setSortBy] = useState<activeParameterType>("change");
   const [order, setOrder] = useState<"desc" | "asc">("desc");
+  const { timePeriod } = useSelector((state: RootState) => state.assetsTable);
   // const activeParameterName = parameters[sortBy];
   const dispatch = useDispatch();
 
@@ -53,7 +57,7 @@ const Coins: React.FC = () => {
     url: "https://coinranking1.p.rapidapi.com/coins",
     params: {
       referenceCurrencyUuid: "yhjMzLPhuIDl",
-      timePeriod: "24h",
+      timePeriod: timePeriod,
       tiers: "1",
       orderBy: sortBy,
       orderDirection: order,
@@ -75,6 +79,21 @@ const Coins: React.FC = () => {
     "listedAt",
     "iconUrl",
   ];
+
+  const timeLabelValues: Record<string, TableTimePeriod> = {
+    "3H": "3h",
+    "1D": "24h",
+    "1W": "7d",
+    "1M": "30d",
+    "1Y": "1y",
+  };
+  const handleTimeLabelChange = (
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    timeLabel: string
+  ) => {
+    console.log(timeLabelValues[timeLabel]);
+    dispatch(setTimePeriod(timeLabelValues[timeLabel]));
+  };
   useEffect(() => {
     setLoadingCoins(true);
     dispatch(setLoadingAssets(true));
@@ -170,10 +189,16 @@ const Coins: React.FC = () => {
       <div className="assets-table-header">
         <p style={{ fontSize: "20px" }}> All Assets</p>
         <ul className="tablefilterTimePeriods">
-          <li className="timeLabel">1H</li>
-          <li className="timeLabel">1D</li>
-          <li className="timeLabel">1W</li>
-          <li className="timeLabel">1H</li>
+          {["3H", "1D", "1W", "1M", "1Y"].map((x) => (
+            <li
+              className={`timeLabel${
+                timePeriod === timeLabelValues[x] ? "-active" : ""
+              }`}
+              onClick={(e) => handleTimeLabelChange(e, x)}
+            >
+              {x}
+            </li>
+          ))}
         </ul>
       </div>
       <div className="assets-table">

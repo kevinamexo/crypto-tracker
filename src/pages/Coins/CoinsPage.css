@@ -92,6 +92,14 @@
   margin: 0 20px;
   font-weight: 600;
   color: rgb(126, 126, 126);
+  cursor: pointer;
+}
+
+.assets-table-header .tablefilterTimePeriods .timeLabel-active {
+  margin: 0 20px;
+  font-weight: 600;
+  color: var(--coinbaseblue);
+  cursor: pointer;
 }
 .assets-table {
   margin-top: 20px;

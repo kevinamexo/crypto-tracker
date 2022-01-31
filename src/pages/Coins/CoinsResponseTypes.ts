@@ -27,6 +27,7 @@ export interface Coin {
   btcPrice: string;
 }
 
+
 export interface Stats {
   total: number;
   totalCoins: number;
