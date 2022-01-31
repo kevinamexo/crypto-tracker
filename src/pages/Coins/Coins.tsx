@@ -46,9 +46,9 @@ const Coins: React.FC = () => {
   const [coins, setCoins] = useState<Coin[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const [stats, setStats] = useState<Stats>({} as Stats);
-  const [sortBy, setSortBy] = useState<activeParameterType>("change");
-  const [order, setOrder] = useState<"desc" | "asc">("desc");
-  const { timePeriod } = useSelector((state: RootState) => state.assetsTable);
+  const { timePeriod, activeColumn, tableOrder } = useSelector(
+    (state: RootState) => state.assetsTable
+  );
   // const activeParameterName = parameters[sortBy];
   const dispatch = useDispatch();
 
@@ -59,8 +59,8 @@ const Coins: React.FC = () => {
       referenceCurrencyUuid: "yhjMzLPhuIDl",
       timePeriod: timePeriod,
       tiers: "1",
-      orderBy: sortBy,
-      orderDirection: order,
+      orderBy: activeColumn,
+      orderDirection: tableOrder,
       limit: "20",
       offset: "0",
     },
@@ -95,6 +95,7 @@ const Coins: React.FC = () => {
     dispatch(setTimePeriod(timeLabelValues[timeLabel]));
   };
   useEffect(() => {
+    if (!timePeriod) return;
     setLoadingCoins(true);
     dispatch(setLoadingAssets(true));
     axios
@@ -123,7 +124,7 @@ const Coins: React.FC = () => {
       });
     setLoadingCoins(false);
     dispatch(setLoadingAssets(false));
-  }, []);
+  }, [timePeriod, activeColumn, tableOrder]);
 
   useEffect(() => {
     if (!stats) return;
@@ -202,7 +203,7 @@ const Coins: React.FC = () => {
         </ul>
       </div>
       <div className="assets-table">
-        <BasicTable sortBy={sortBy} />
+        <BasicTable />
       </div>
     </div>
   );
