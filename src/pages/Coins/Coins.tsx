@@ -16,6 +16,7 @@ import {
   setLoadingSearchResults,
 } from "../../redux/app/features/tables/assetsTableSlice";
 import { setSearchResultsArr } from "../../redux/app/features/tables/assetsTableSlice";
+import { setSearchModal } from "../../redux/app/features/modalsSlice";
 import { RootState } from "../../redux/app/store";
 import ClipLoader from "react-spinners/ClipLoader";
 import { AiOutlineClose } from "react-icons/ai";
@@ -127,18 +128,21 @@ const Coins: React.FC = () => {
       axios
         .get<CoinsResponse>(searchCoinsOptions.url, {
           headers: searchCoinsOptions.headers,
-          params: searchCoinsOptions.params,
+          params: { referenceCurrencyUuid: "yhjMzLPhuIDl", query: searchValue },
         })
         .then((res) => {
           console.log(res.data.data.coins);
           dispatch(setSearchResultsArr(res.data.data.coins));
+          console.log("SEARCH MADE");
+          dispatch(setLoadingSearchResults(false));
         });
     }, 500),
     []
   );
   const handleSearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setLoadingSearchResults(true));
+    dispatch(setSearchModal(true));
     setSearchValue(e.target.value);
+    dispatch(setLoadingSearchResults(true));
     handleAssetsSearch(e.target.value);
   };
 
@@ -186,6 +190,7 @@ const Coins: React.FC = () => {
 
     if (numberOfSearchChars === 0) {
       dispatch(setLoadingSearchResults(false));
+      dispatch(setSearchModal(false));
       fetchTableAssets();
     }
   }, [searchValue]);
@@ -223,9 +228,25 @@ const Coins: React.FC = () => {
                 <AiOutlineClose className="closeSearch" />
               </div>
             )}
-            <div className="searchResultsModal">
-              {searchResults && searchResults.map((s) => <p>{s.name}</p>)}
-            </div>
+            {searchModal === true && (
+              <ul className="searchResultsModal">
+                {searchResults &&
+                  searchResults.map((s) => (
+                    <li className="searchResultModal-result">
+                      <section className="section1">
+                        <img src={s.iconUrl} />
+                        <span>
+                          <p className="searchResultModal-result-name">
+                            {s.name}
+                          </p>
+                          <p>{s.symbol}</p>
+                        </span>
+                      </section>
+                      <section className="section2">{s.price}</section>
+                    </li>
+                  ))}
+              </ul>
+            )}
           </div>
         </div>
         <div className="globalMarketSummary">
