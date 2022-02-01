@@ -7,6 +7,7 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import { Sparklines, SparklinesLine } from "react-sparklines";
 import { Coin } from "./CoinsResponseTypes";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/app/store";
@@ -25,6 +26,7 @@ import {
 type RowNames = keyof Coin;
 const rowNames: activeParameterType[] = [
   "name",
+  "sparkline",
   "price",
   "marketCap",
   "24hVolume",
@@ -104,10 +106,18 @@ const BasicTable: React.FC = () => {
                         rowName === "name" ? "tableValueCell-value" : ""
                       }
                     >
-                      {rowName === "listedAt"
+                      {rowName === "sparkline"
+                        ? null
+                        : rowName === "listedAt"
                         ? new Date(row[rowName] * 1000).toDateString()
                         : row[rowName] ?? "-"}
                     </p>
+
+                    {rowName === "sparkline" && (
+                      <Sparklines data={row[rowName]}>
+                        <SparklinesLine color="blue" />
+                      </Sparklines>
+                    )}
                   </div>
                 </TableCell>
               ))}

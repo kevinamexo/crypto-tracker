@@ -16,6 +16,7 @@ import { RootState } from "../../redux/app/store";
 
 export interface RankParameter {
   marketCap: string;
+  sparkline: Number[];
   "24hVolume": string;
   change: string;
   listedAt: string;
@@ -27,6 +28,7 @@ export type RankParameters = Record<keyof Partial<RankParameter>, string>;
 
 export const parameters: RankParameters = {
   marketCap: "Market Cap",
+  sparkline: "Price chart",
   "24hVolume": "24hr Volume",
   change: "Change",
   listedAt: "Time listed",
@@ -73,6 +75,7 @@ const Coins: React.FC = () => {
   const tableRows: string[] = [
     "name",
     "price",
+    "sparkline",
     "marketCap",
     "24hVolume",
     "change",
@@ -173,8 +176,9 @@ const Coins: React.FC = () => {
           Market summary - 24 hours
         </p>
         <ul className="coinMarketSummary-coins">
-          {Object.keys(parameters).map((parameter, key) => {
-            if (parameter !== "name") {
+          {Object.keys(parameters)
+            .filter((p) => p !== "name" && p !== "sparkline")
+            .map((parameter, key) => {
               return (
                 <CoinCard
                   key={key}
@@ -182,8 +186,7 @@ const Coins: React.FC = () => {
                   title={parameters[parameter as keyof RankParameters]}
                 />
               );
-            }
-          })}
+            })}
         </ul>
       </section>
       {/* <CoinCard category="24hVolume" /> */}
