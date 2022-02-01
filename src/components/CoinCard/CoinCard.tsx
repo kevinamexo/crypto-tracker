@@ -99,6 +99,11 @@ const CoinCard: React.FC<CoinCardProps> = ({ category, title }) => {
             <p>change </p>
           </>
         )}
+        {category === "price" && coinData && coinData["price"] && (
+          <>
+            <p className="value">{Number(coinData["price"]).toFixed(2)}</p>
+          </>
+        )}
       </div>
     </div>
   );
