@@ -48,9 +48,13 @@ const Coins: React.FC = () => {
   const [coins, setCoins] = useState<Coin[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const [stats, setStats] = useState<Stats>({} as Stats);
-  const { timePeriod, activeColumn, tableOrder } = useSelector(
-    (state: RootState) => state.assetsTable
-  );
+  const {
+    timePeriod,
+    activeColumn,
+    tableOrder,
+    resultsPerPage,
+    assetsTablePage,
+  } = useSelector((state: RootState) => state.assetsTable);
   // const activeParameterName = parameters[sortBy];
   const dispatch = useDispatch();
 
@@ -63,8 +67,8 @@ const Coins: React.FC = () => {
       tiers: "1",
       orderBy: activeColumn,
       orderDirection: tableOrder,
-      limit: "20",
-      offset: "0",
+      limit: String(resultsPerPage),
+      offset: String((assetsTablePage - 1) * resultsPerPage),
     },
     headers: {
       "x-rapidapi-host": process.env.REACT_APP_RAPID_API_HOST as string,
@@ -99,6 +103,8 @@ const Coins: React.FC = () => {
   };
   useEffect(() => {
     if (!timePeriod) return;
+    console.log("fetching with parameters:");
+    console.log(assetsTablePage, activeColumn, timePeriod, tableOrder);
     setLoadingCoins(true);
     dispatch(setLoadingAssets(true));
     axios

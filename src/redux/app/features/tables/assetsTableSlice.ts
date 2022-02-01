@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { stat } from "fs";
 import { activeParameterType } from "../../../../pages/Coins/Coins";
 export type TableTimePeriod = "3h" | "24h" | "7d" | "30d" | "1y";
 
@@ -9,6 +10,8 @@ interface TableState {
   timePeriod: TableTimePeriod;
   tableOrder: TableRequestOrder;
   activeColumn: activeParameterType;
+  resultsPerPage: number;
+  assetsTablePage: number;
 }
 
 const initialState: TableState = {
@@ -17,6 +20,8 @@ const initialState: TableState = {
   timePeriod: "24h",
   tableOrder: "desc",
   activeColumn: "price",
+  resultsPerPage: 20,
+  assetsTablePage: 1,
 };
 
 const assetsTableSlice = createSlice({
@@ -28,6 +33,7 @@ const assetsTableSlice = createSlice({
     },
     setTimePeriod: (state, action: PayloadAction<TableTimePeriod>) => {
       state.timePeriod = action.payload;
+      state.assetsTablePage = 1;
     },
     setTableData: (state, action: PayloadAction<Array<Object>>) => {
       state.tableData = action.payload;
@@ -38,6 +44,12 @@ const assetsTableSlice = createSlice({
     setActiveColumn: (state, action: PayloadAction<activeParameterType>) => {
       state.activeColumn = action.payload;
     },
+    setResultsPerPage: (state, action: PayloadAction<number>) => {
+      state.resultsPerPage = action.payload;
+    },
+    setAssetsTablePage: (state, action: PayloadAction<number>) => {
+      state.assetsTablePage = action.payload;
+    },
   },
 });
 
@@ -47,6 +59,8 @@ export const {
   setTimePeriod,
   setTableOrder,
   setActiveColumn,
+  setResultsPerPage,
+  setAssetsTablePage,
 } = assetsTableSlice.actions;
 
 export default assetsTableSlice.reducer;
