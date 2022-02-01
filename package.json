@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.7.1",
     "@material-ui/core": "^4.12.3",
     "@reduxjs/toolkit": "^1.5.1",
     "@testing-library/jest-dom": "^4.2.4",
@@ -22,6 +23,7 @@
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "react-sparklines": "^1.7.0",
+    "react-spinners": "^0.11.0",
     "typescript": "~4.1.5"
   },
   "scripts": {
@@ -46,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.6",
     "@types/react-sparklines": "^1.7.2"
   }
 }

@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import debounce from "lodash.debounce";
 import axios from "axios";
+import { css } from "@emotion/react";
 import { Coin, CoinsResponse, Stats } from "./CoinsResponseTypes";
 import CoinCard from "../../components/CoinCard/CoinCard";
 import "./CoinsPage.css";
@@ -11,8 +13,12 @@ import {
   setTableData,
   setTimePeriod,
   TableTimePeriod,
+  setLoadingSearchResults,
 } from "../../redux/app/features/tables/assetsTableSlice";
+import { setSearchResultsArr } from "../../redux/app/features/tables/assetsTableSlice";
 import { RootState } from "../../redux/app/store";
+import ClipLoader from "react-spinners/ClipLoader";
+import { AiOutlineClose } from "react-icons/ai";
 
 export interface RankParameter {
   marketCap: string;
@@ -46,15 +52,18 @@ export type activeParameterType = keyof RankParameter;
 const Coins: React.FC = () => {
   const [loadingCoins, setLoadingCoins] = useState<boolean | null>(null);
   const [coins, setCoins] = useState<Coin[]>([]);
-  const [searchValue, setSearchValue] = useState<string>("");
   const [stats, setStats] = useState<Stats>({} as Stats);
+  const [searchValue, setSearchValue] = useState<string>("");
   const {
     timePeriod,
     activeColumn,
     tableOrder,
     resultsPerPage,
     assetsTablePage,
+    loadingSearchResults,
+    searchResults,
   } = useSelector((state: RootState) => state.assetsTable);
+  const { searchModal } = useSelector((state: RootState) => state.modals);
   // const activeParameterName = parameters[sortBy];
   const dispatch = useDispatch();
 
@@ -76,6 +85,15 @@ const Coins: React.FC = () => {
     },
   };
 
+  let searchCoinsOptions: FetchCoinsOptions = {
+    method: "GET",
+    url: "https://coinranking1.p.rapidapi.com/search-suggestions",
+    params: { referenceCurrencyUuid: "yhjMzLPhuIDl", query: searchValue },
+    headers: {
+      "x-rapidapi-host": "coinranking1.p.rapidapi.com",
+      "x-rapidapi-key": "16b19d757bmsh1c2316bb5ece6b7p1286c6jsn227702a96e01",
+    },
+  };
   const tableRows: string[] = [
     "name",
     "price",
@@ -101,8 +119,30 @@ const Coins: React.FC = () => {
     console.log(timeLabelValues[timeLabel]);
     dispatch(setTimePeriod(timeLabelValues[timeLabel]));
   };
-  useEffect(() => {
-    if (!timePeriod) return;
+
+  const handleAssetsSearch = useCallback(
+    debounce((searchValue) => {
+      if (!searchValue) return;
+      console.log("SEARCHING COINS for " + searchValue);
+      axios
+        .get<CoinsResponse>(searchCoinsOptions.url, {
+          headers: searchCoinsOptions.headers,
+          params: searchCoinsOptions.params,
+        })
+        .then((res) => {
+          console.log(res.data.data.coins);
+          dispatch(setSearchResultsArr(res.data.data.coins));
+        });
+    }, 500),
+    []
+  );
+  const handleSearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setLoadingSearchResults(true));
+    setSearchValue(e.target.value);
+    handleAssetsSearch(e.target.value);
+  };
+
+  const fetchTableAssets = () => {
     console.log("fetching with parameters:");
     console.log(assetsTablePage, activeColumn, timePeriod, tableOrder);
     setLoadingCoins(true);
@@ -133,12 +173,30 @@ const Coins: React.FC = () => {
       });
     setLoadingCoins(false);
     dispatch(setLoadingAssets(false));
+  };
+  useEffect(() => {
+    if (!timePeriod) return;
+    fetchTableAssets();
   }, [timePeriod, activeColumn, tableOrder]);
+
+  useEffect(() => {
+    console.log(searchValue.length);
+    const numberOfSearchChars =
+      searchValue.length - searchValue.split(" ").length + 1;
+
+    if (numberOfSearchChars === 0) {
+      dispatch(setLoadingSearchResults(false));
+      fetchTableAssets();
+    }
+  }, [searchValue]);
 
   useEffect(() => {
     if (!stats) return;
   }, [stats]);
 
+  const overrideClipLoader = css`
+    margin-right: 5px;
+  `;
   return (
     <div className="coinsPage">
       <section className="coinMarketSummary">
@@ -148,11 +206,26 @@ const Coins: React.FC = () => {
             <input
               name="searchValue"
               value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              onChange={handleSearchValueChange}
               className="coinPageSearch"
               placeholder="Search"
             />
             <BiSearch className="coinPageSearchIcon" />
+            {searchModal === true && (
+              <div className="loadingSearchResults">
+                {loadingSearchResults === true && searchModal === true && (
+                  <ClipLoader
+                    color={"#0052ff"}
+                    size={20}
+                    css={overrideClipLoader}
+                  />
+                )}
+                <AiOutlineClose className="closeSearch" />
+              </div>
+            )}
+            <div className="searchResultsModal">
+              {searchResults && searchResults.map((s) => <p>{s.name}</p>)}
+            </div>
           </div>
         </div>
         <div className="globalMarketSummary">

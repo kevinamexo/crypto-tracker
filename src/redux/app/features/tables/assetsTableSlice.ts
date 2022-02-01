@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { stat } from "fs";
 import { activeParameterType } from "../../../../pages/Coins/Coins";
+import { Coin } from "../../../../pages/Coins/CoinsResponseTypes";
 export type TableTimePeriod = "3h" | "24h" | "7d" | "30d" | "1y";
 
 type TableRequestOrder = "asc" | "desc";
@@ -12,6 +13,8 @@ interface TableState {
   activeColumn: activeParameterType;
   resultsPerPage: number;
   assetsTablePage: number;
+  loadingSearchResults: boolean | null;
+  searchResults: Partial<Coin>[];
 }
 
 const initialState: TableState = {
@@ -22,6 +25,8 @@ const initialState: TableState = {
   activeColumn: "price",
   resultsPerPage: 20,
   assetsTablePage: 1,
+  loadingSearchResults: null,
+  searchResults: [] as Partial<Coin>[],
 };
 
 const assetsTableSlice = createSlice({
@@ -50,6 +55,12 @@ const assetsTableSlice = createSlice({
     setAssetsTablePage: (state, action: PayloadAction<number>) => {
       state.assetsTablePage = action.payload;
     },
+    setLoadingSearchResults: (state, action: PayloadAction<boolean>) => {
+      state.loadingSearchResults = action.payload;
+    },
+    setSearchResultsArr: (state, action: PayloadAction<any>) => {
+      state.searchResults = [...(action.payload as Partial<Coin>[])];
+    },
   },
 });
 
@@ -61,6 +72,8 @@ export const {
   setActiveColumn,
   setResultsPerPage,
   setAssetsTablePage,
+  setLoadingSearchResults,
+  setSearchResultsArr,
 } = assetsTableSlice.actions;
 
 export default assetsTableSlice.reducer;
