@@ -83,7 +83,7 @@ const BasicTable: React.FC = () => {
                   active={activeColumn === rowName}
                   direction={orderDirection}
                 >
-                  <div>{parameters[rowName]}</div>
+                  <div style={{ fontWeight: "700" }}>{parameters[rowName]}</div>
                 </TableSortLabel>
               </TableRow>
             </TableCell>
@@ -105,6 +105,9 @@ const BasicTable: React.FC = () => {
                       className={
                         rowName === "name" ? "tableValueCell-value" : ""
                       }
+                      style={{
+                        fontWeight: `${rowName === "name" ? "700" : "600"}`,
+                      }}
                     >
                       {rowName === "sparkline"
                         ? null

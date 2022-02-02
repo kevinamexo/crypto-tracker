@@ -20,6 +20,13 @@ import { setSearchModal } from "../../redux/app/features/modalsSlice";
 import { RootState } from "../../redux/app/store";
 import ClipLoader from "react-spinners/ClipLoader";
 import { AiOutlineClose } from "react-icons/ai";
+import useWindowSize from "../../customHooks/useWindowSize";
+
+import Box from "@material-ui/core/Box";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 
 export interface RankParameter {
   marketCap: string;
@@ -50,6 +57,7 @@ export interface FetchCoinsOptions {
 }
 
 export type activeParameterType = keyof RankParameter;
+const SEARCH_TABLE_BREAKPOINT: number = 768;
 const Coins: React.FC = () => {
   const [loadingCoins, setLoadingCoins] = useState<boolean | null>(null);
   const [coins, setCoins] = useState<Coin[]>([]);
@@ -65,6 +73,12 @@ const Coins: React.FC = () => {
     searchResults,
   } = useSelector((state: RootState) => state.assetsTable);
   const { searchModal } = useSelector((state: RootState) => state.modals);
+  const { windowWidth, searchTableBreakpoint } = useSelector(
+    (state: RootState) => state.layout
+  );
+  const miniminzeTableAndSearch =
+    windowWidth && windowWidth < searchTableBreakpoint ? true : false;
+
   // const activeParameterName = parameters[sortBy];
   const dispatch = useDispatch();
 
@@ -207,20 +221,108 @@ const Coins: React.FC = () => {
   const overrideClipLoader = css`
     margin-right: 5px;
   `;
+
+  ///MINIMIZED MENU
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState<string>("1D");
+  const [minimizedSearchActive, setMinimizedSearchActive] =
+    useState<boolean>(false);
+
+  const handleMiniTimePeriodChange = (
+    event: React.ChangeEvent<{ value: unknown }>
+  ) => {
+    setSelectedTimePeriod(event.target.value as string);
+    dispatch(setTimePeriod(event.target.value as TableTimePeriod));
+  };
+
+  const handleSearchButtonClick = useCallback(
+    (e: React.MouseEvent<SVGElement>) => {
+      if (miniminzeTableAndSearch === true && minimizedSearchActive === false) {
+        setMinimizedSearchActive(true);
+      }
+    },
+    [miniminzeTableAndSearch, minimizedSearchActive]
+  );
   return (
     <div className="coinsPage">
       <section className="coinMarketSummary">
         <div className="header">
-          <p className="coinPage-marketSummary__title">Global Statistics</p>
-          <div className="search-input">
-            <input
-              name="searchValue"
-              value={searchValue}
-              onChange={handleSearchValueChange}
-              className="coinPageSearch"
-              placeholder="Search"
+          {!(
+            miniminzeTableAndSearch === true && minimizedSearchActive === true
+          ) && (
+            <p
+              className={`coinPage-marketSummary__title${
+                miniminzeTableAndSearch ? "-min" : ""
+              }`}
+            >
+              Global Statistics
+            </p>
+          )}
+          <div
+            className={`search-input${
+              miniminzeTableAndSearch && !minimizedSearchActive
+                ? "-min"
+                : miniminzeTableAndSearch && minimizedSearchActive === true
+                ? "-min-full"
+                : ""
+            }`}
+          >
+            {miniminzeTableAndSearch === false ? (
+              <input
+                name="searchValue"
+                value={searchValue}
+                onChange={handleSearchValueChange}
+                className={`coinPageSearch${
+                  minimizedSearchActive === true ? "-mini" : ""
+                }`}
+                placeholder="Search"
+              />
+            ) : miniminzeTableAndSearch === true &&
+              minimizedSearchActive === true ? (
+              <input
+                name="searchValue"
+                value={searchValue}
+                onChange={handleSearchValueChange}
+                className="coinPageSearch-mini-full"
+              />
+            ) : null}
+            {miniminzeTableAndSearch === true &&
+              minimizedSearchActive === false && (
+                <div className="minimizedTimePeriods">
+                  <Box sx={{ width: 120 }}>
+                    <FormControl>
+                      {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={timePeriod}
+                        label="timePeriod"
+                        className="select"
+                        onChange={handleMiniTimePeriodChange}
+                      >
+                        {["3H", "1D", "1W", "1M", "1Y"].map((p) => (
+                          <MenuItem value={timeLabelValues[p]}>{p}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                </div>
+              )}
+
+            <BiSearch
+              className={`coinPageSearchIcon${
+                miniminzeTableAndSearch ? "-min" : ""
+              }`}
+              onClick={handleSearchButtonClick}
             />
-            <BiSearch className="coinPageSearchIcon" />
+            {miniminzeTableAndSearch === true &&
+              minimizedSearchActive === true && (
+                <button
+                  className="cancelMiniSearch"
+                  onClick={() => setMinimizedSearchActive(false)}
+                >
+                  Cancel
+                </button>
+              )}
             {searchModal === true && (
               <div className="loadingSearchResults">
                 {loadingSearchResults === true && searchModal === true && (
@@ -296,19 +398,21 @@ const Coins: React.FC = () => {
       </section>
       {/* <CoinCard category="24hVolume" /> */}
       <div className="assets-table-header">
-        <p style={{ fontSize: "20px" }}> All Assets</p>
-        <ul className="tablefilterTimePeriods">
-          {["3H", "1D", "1W", "1M", "1Y"].map((x) => (
-            <li
-              className={`timeLabel${
-                timePeriod === timeLabelValues[x] ? "-active" : ""
-              }`}
-              onClick={(e) => handleTimeLabelChange(e, x)}
-            >
-              {x}
-            </li>
-          ))}
-        </ul>
+        <p className="tableTitle"> All assets</p>
+        {miniminzeTableAndSearch === false && (
+          <ul className="tablefilterTimePeriods">
+            {["3H", "1D", "1W", "1M", "1Y"].map((x) => (
+              <li
+                className={`timeLabel${
+                  timePeriod === timeLabelValues[x] ? "-active" : ""
+                }`}
+                onClick={(e) => handleTimeLabelChange(e, x)}
+              >
+                {x}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
       <div className="assets-table">
         <BasicTable />

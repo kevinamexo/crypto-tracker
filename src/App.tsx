@@ -3,7 +3,7 @@ import Navbar from "./components/layout/Navbar/Navbar";
 import "./App.css";
 import { Routes, Route, useParams, Navigate } from "react-router-dom";
 import Coins from "./pages/Coins/Coins";
-import axios from "axios";
+import useWindowSize from "./customHooks/useWindowSize";
 
 const Home: React.FC = () => {
   return (
@@ -29,6 +29,7 @@ const CoinHistory: React.FC = () => {
   );
 };
 const App: React.FC = () => {
+  const windowSize = useWindowSize();
   return (
     <div className="App">
       <Navbar />
