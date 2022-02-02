@@ -146,6 +146,11 @@ const Coins: React.FC = () => {
     handleAssetsSearch(e.target.value);
   };
 
+  const closeSearch = useCallback(() => {
+    dispatch(setSearchModal(false));
+    setSearchValue("");
+  }, [searchModal, searchValue]);
+
   const fetchTableAssets = () => {
     console.log("fetching with parameters:");
     console.log(assetsTablePage, activeColumn, timePeriod, tableOrder);
@@ -225,7 +230,7 @@ const Coins: React.FC = () => {
                     css={overrideClipLoader}
                   />
                 )}
-                <AiOutlineClose className="closeSearch" />
+                <AiOutlineClose className="closeSearch" onClick={closeSearch} />
               </div>
             )}
             {searchModal === true && (
