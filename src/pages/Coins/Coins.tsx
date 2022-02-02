@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import debounce from "lodash.debounce";
 import axios from "axios";
-import { css } from "@emotion/react";
+
 import { Coin, CoinsResponse, Stats } from "./CoinsResponseTypes";
 import CoinCard from "../../components/CoinCard/CoinCard";
 import "./CoinsPage.css";
-import { BiSearch } from "react-icons/bi";
+
 import BasicTable from "./CoinsTable";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,18 +14,9 @@ import {
   TableTimePeriod,
   setLoadingSearchResults,
 } from "../../redux/app/features/tables/assetsTableSlice";
-import { setSearchResultsArr } from "../../redux/app/features/tables/assetsTableSlice";
 import { setSearchModal } from "../../redux/app/features/modalsSlice";
 import { RootState } from "../../redux/app/store";
-import ClipLoader from "react-spinners/ClipLoader";
-import { AiOutlineClose } from "react-icons/ai";
-import useWindowSize from "../../customHooks/useWindowSize";
-
-import Box from "@material-ui/core/Box";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
+import SearchComponent from "../../components/Search/SearchComponent";
 
 export interface RankParameter {
   marketCap: string;
@@ -62,17 +52,17 @@ const Coins: React.FC = () => {
   const [loadingCoins, setLoadingCoins] = useState<boolean | null>(null);
   const [coins, setCoins] = useState<Coin[]>([]);
   const [stats, setStats] = useState<Stats>({} as Stats);
-  const [searchValue, setSearchValue] = useState<string>("");
   const {
     timePeriod,
     activeColumn,
     tableOrder,
     resultsPerPage,
     assetsTablePage,
-    loadingSearchResults,
-    searchResults,
+    searchValue,
   } = useSelector((state: RootState) => state.assetsTable);
-  const { searchModal } = useSelector((state: RootState) => state.modals);
+  const { minimizedSearchActive } = useSelector(
+    (state: RootState) => state.modals
+  );
   const { windowWidth, searchTableBreakpoint } = useSelector(
     (state: RootState) => state.layout
   );
@@ -100,15 +90,6 @@ const Coins: React.FC = () => {
     },
   };
 
-  let searchCoinsOptions: FetchCoinsOptions = {
-    method: "GET",
-    url: "https://coinranking1.p.rapidapi.com/search-suggestions",
-    params: { referenceCurrencyUuid: "yhjMzLPhuIDl", query: searchValue },
-    headers: {
-      "x-rapidapi-host": "coinranking1.p.rapidapi.com",
-      "x-rapidapi-key": "16b19d757bmsh1c2316bb5ece6b7p1286c6jsn227702a96e01",
-    },
-  };
   const tableRows: string[] = [
     "name",
     "price",
@@ -134,36 +115,6 @@ const Coins: React.FC = () => {
     console.log(timeLabelValues[timeLabel]);
     dispatch(setTimePeriod(timeLabelValues[timeLabel]));
   };
-
-  const handleAssetsSearch = useCallback(
-    debounce((searchValue) => {
-      if (!searchValue) return;
-      console.log("SEARCHING COINS for " + searchValue);
-      axios
-        .get<CoinsResponse>(searchCoinsOptions.url, {
-          headers: searchCoinsOptions.headers,
-          params: { referenceCurrencyUuid: "yhjMzLPhuIDl", query: searchValue },
-        })
-        .then((res) => {
-          console.log(res.data.data.coins);
-          dispatch(setSearchResultsArr(res.data.data.coins));
-          console.log("SEARCH MADE");
-          dispatch(setLoadingSearchResults(false));
-        });
-    }, 500),
-    []
-  );
-  const handleSearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setSearchModal(true));
-    setSearchValue(e.target.value);
-    dispatch(setLoadingSearchResults(true));
-    handleAssetsSearch(e.target.value);
-  };
-
-  const closeSearch = useCallback(() => {
-    dispatch(setSearchModal(false));
-    setSearchValue("");
-  }, [searchModal, searchValue]);
 
   const fetchTableAssets = () => {
     console.log("fetching with parameters:");
@@ -203,6 +154,10 @@ const Coins: React.FC = () => {
   }, [timePeriod, activeColumn, tableOrder]);
 
   useEffect(() => {
+    if (!stats) return;
+  }, [stats]);
+
+  useEffect(() => {
     console.log(searchValue.length);
     const numberOfSearchChars =
       searchValue.length - searchValue.split(" ").length + 1;
@@ -213,35 +168,8 @@ const Coins: React.FC = () => {
       fetchTableAssets();
     }
   }, [searchValue]);
-
-  useEffect(() => {
-    if (!stats) return;
-  }, [stats]);
-
-  const overrideClipLoader = css`
-    margin-right: 5px;
-  `;
-
   ///MINIMIZED MENU
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState<string>("1D");
-  const [minimizedSearchActive, setMinimizedSearchActive] =
-    useState<boolean>(false);
 
-  const handleMiniTimePeriodChange = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    setSelectedTimePeriod(event.target.value as string);
-    dispatch(setTimePeriod(event.target.value as TableTimePeriod));
-  };
-
-  const handleSearchButtonClick = useCallback(
-    (e: React.MouseEvent<SVGElement>) => {
-      if (miniminzeTableAndSearch === true && minimizedSearchActive === false) {
-        setMinimizedSearchActive(true);
-      }
-    },
-    [miniminzeTableAndSearch, minimizedSearchActive]
-  );
   return (
     <div className="coinsPage">
       <section className="coinMarketSummary">
@@ -257,104 +185,7 @@ const Coins: React.FC = () => {
               Global Statistics
             </p>
           )}
-          <div
-            className={`search-input${
-              miniminzeTableAndSearch && !minimizedSearchActive
-                ? "-min"
-                : miniminzeTableAndSearch && minimizedSearchActive === true
-                ? "-min-full"
-                : ""
-            }`}
-          >
-            {miniminzeTableAndSearch === false ? (
-              <input
-                name="searchValue"
-                value={searchValue}
-                onChange={handleSearchValueChange}
-                className={`coinPageSearch${
-                  minimizedSearchActive === true ? "-mini" : ""
-                }`}
-                placeholder="Search"
-              />
-            ) : miniminzeTableAndSearch === true &&
-              minimizedSearchActive === true ? (
-              <input
-                name="searchValue"
-                value={searchValue}
-                onChange={handleSearchValueChange}
-                className="coinPageSearch-mini-full"
-              />
-            ) : null}
-            {miniminzeTableAndSearch === true &&
-              minimizedSearchActive === false && (
-                <div className="minimizedTimePeriods">
-                  <Box sx={{ width: 120 }}>
-                    <FormControl>
-                      {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={timePeriod}
-                        label="timePeriod"
-                        className="select"
-                        onChange={handleMiniTimePeriodChange}
-                      >
-                        {["3H", "1D", "1W", "1M", "1Y"].map((p) => (
-                          <MenuItem value={timeLabelValues[p]}>{p}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Box>
-                </div>
-              )}
-
-            <BiSearch
-              className={`coinPageSearchIcon${
-                miniminzeTableAndSearch ? "-min" : ""
-              }`}
-              onClick={handleSearchButtonClick}
-            />
-            {miniminzeTableAndSearch === true &&
-              minimizedSearchActive === true && (
-                <button
-                  className="cancelMiniSearch"
-                  onClick={() => setMinimizedSearchActive(false)}
-                >
-                  Cancel
-                </button>
-              )}
-            {searchModal === true && (
-              <div className="loadingSearchResults">
-                {loadingSearchResults === true && searchModal === true && (
-                  <ClipLoader
-                    color={"#0052ff"}
-                    size={20}
-                    css={overrideClipLoader}
-                  />
-                )}
-                <AiOutlineClose className="closeSearch" onClick={closeSearch} />
-              </div>
-            )}
-            {searchModal === true && (
-              <ul className="searchResultsModal">
-                {searchResults &&
-                  searchResults.map((s) => (
-                    <li className="searchResultModal-result">
-                      <section className="section1">
-                        <img src={s.iconUrl} />
-                        <span>
-                          <p className="searchResultModal-result-name">
-                            {s.name}
-                          </p>
-                          <p>{s.symbol}</p>
-                        </span>
-                      </section>
-                      <section className="section2">{s.price}</section>
-                    </li>
-                  ))}
-              </ul>
-            )}
-          </div>
+          <SearchComponent />
         </div>
         <div className="globalMarketSummary">
           <ul className="globalMarketStat">

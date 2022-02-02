@@ -15,6 +15,7 @@ interface TableState {
   assetsTablePage: number;
   loadingSearchResults: boolean | null;
   searchResults: Partial<Coin>[];
+  searchValue: string;
 }
 
 const initialState: TableState = {
@@ -27,6 +28,7 @@ const initialState: TableState = {
   assetsTablePage: 1,
   loadingSearchResults: null,
   searchResults: [] as Partial<Coin>[],
+  searchValue: "",
 };
 
 const assetsTableSlice = createSlice({
@@ -61,6 +63,9 @@ const assetsTableSlice = createSlice({
     setSearchResultsArr: (state, action: PayloadAction<any>) => {
       state.searchResults = [...(action.payload as Partial<Coin>[])];
     },
+    setSearchValue: (state, action: PayloadAction<string>) => {
+      state.searchValue = action.payload;
+    },
   },
 });
 
@@ -74,6 +79,7 @@ export const {
   setAssetsTablePage,
   setLoadingSearchResults,
   setSearchResultsArr,
+  setSearchValue,
 } = assetsTableSlice.actions;
 
 export default assetsTableSlice.reducer;
