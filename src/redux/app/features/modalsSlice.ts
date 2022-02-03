@@ -4,10 +4,12 @@ import { stat } from "fs";
 interface Modals {
   searchModal: boolean | null;
   minimizedSearchActive: boolean;
+  modalActive: boolean | null;
 }
 const initialState: Modals = {
   searchModal: true,
   minimizedSearchActive: false,
+  modalActive: null,
 };
 
 const modalsSlice = createSlice({
@@ -19,6 +21,11 @@ const modalsSlice = createSlice({
     },
     setMinimizedSearchActive: (state, action: PayloadAction<boolean>) => {
       state.minimizedSearchActive = action.payload;
+      if (action.payload === false) {
+        state.modalActive = false;
+      } else if (action.payload === true) {
+        state.modalActive = true;
+      }
     },
   },
 });

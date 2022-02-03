@@ -17,7 +17,15 @@
   font-family: "Lato", sans-serif;
 }
 
-.App {
+.App,
+.App-modalActive {
   position: relative;
   padding-top: 65px;
+}
+
+.App-modalActive {
+  position: relative;
+  padding-top: 65px;
+  height: 100vh;
+  overflow: hidden;
 }

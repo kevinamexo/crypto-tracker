@@ -189,7 +189,7 @@ const SearchComponent = () => {
         </div>
       )}
       {searchModal === true && (
-        <ul className="searchResultsModal">
+        <ul className={`coinMarketSummary-coins`}>
           {searchResults &&
             searchResults.map((s) => (
               <li className="searchResultModal-result">

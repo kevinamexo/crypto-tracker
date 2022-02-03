@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import Navbar from "./components/layout/Navbar/Navbar";
 import "./App.css";
 import { Routes, Route, useParams, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Coins from "./pages/Coins/Coins";
 import useWindowSize from "./customHooks/useWindowSize";
+import { RootState } from "./redux/app/store";
 
 const Home: React.FC = () => {
   return (
@@ -30,8 +32,9 @@ const CoinHistory: React.FC = () => {
 };
 const App: React.FC = () => {
   const windowSize = useWindowSize();
+  const { modalActive } = useSelector((state: RootState) => state.modals);
   return (
-    <div className="App">
+    <div className={`App${modalActive === true ? "-modalActive" : ""}`}>
       <Navbar />
       <Routes>
         <Route index element={<Home />} />
