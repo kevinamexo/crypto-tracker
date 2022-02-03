@@ -47,8 +47,6 @@ export default function TableContent() {
   const [valueToOrderBy, setValueToOrderBy] = useState<string | "name" | "age">(
     "name"
   );
-  const [page, setPage] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(1);
 
   const handleRequestSort = (event: any, property: any) => {
     const isAscending = valueToOrderBy === property && orderDirection === "asc";

@@ -98,17 +98,36 @@ const SearchComponent = () => {
   const handleSearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setSearchModal(true));
     dispatch(setSearchValue(e.target.value));
-    dispatch(setLoadingSearchResults(true));
+    if (e.target.value !== "") {
+      dispatch(setLoadingSearchResults(true));
+    }
     handleAssetsSearch(e.target.value);
   };
 
   const closeSearch = useCallback(() => {
+    console.log("HANDLING CLOSING MINI SEARCH");
     dispatch(setSearchModal(false));
+    dispatch(setMinimizedSearchActive(false));
     setSearchValue("");
+    dispatch(setSearchResultsArr([]));
   }, [searchModal, searchValue]);
   const overrideClipLoader = css`
     margin-right: 5px;
   `;
+
+  useEffect(() => {
+    if (windowWidth && windowWidth < searchTableBreakpoint) return;
+    console.log("WIDTH IS MORE");
+    dispatch(setMinimizedSearchActive(false));
+    dispatch(setSearchModal(false));
+  }, [windowWidth]);
+
+  useEffect(() => {
+    if (!minimizedSearchActive) return;
+    if (minimizedSearchActive === true) {
+      dispatch(setSearchModal(true));
+    }
+  }, [minimizedSearchActive]);
 
   return (
     <div
@@ -151,24 +170,22 @@ const SearchComponent = () => {
                 className="select"
                 onChange={handleMiniTimePeriodChange}
               >
-                {["3H", "1D", "1W", "1M", "1Y"].map((p) => (
-                  <MenuItem value={timeLabelValues[p]}>{p}</MenuItem>
+                {["3H", "1D", "1W", "1M", "1Y"].map((p, key) => (
+                  <MenuItem key={key} value={timeLabelValues[p]}>
+                    {p}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Box>
         </div>
       )}
-
       <BiSearch
         className={`coinPageSearchIcon${miniminzeTableAndSearch ? "-min" : ""}`}
         onClick={handleSearchButtonClick}
       />
       {miniminzeTableAndSearch === true && minimizedSearchActive === true && (
-        <button
-          className="cancelMiniSearch"
-          onClick={() => dispatch(setMinimizedSearchActive(false))}
-        >
+        <button className="cancelMiniSearch" onClick={closeSearch}>
           Cancel
         </button>
       )}
@@ -189,18 +206,22 @@ const SearchComponent = () => {
         </div>
       )}
       {searchModal === true && (
-        <ul className={`coinMarketSummary-coins`}>
+        <ul className="searchResultsModal">
           {searchResults &&
-            searchResults.map((s) => (
-              <li className="searchResultModal-result">
+            searchResults.map((s: any, key: number) => (
+              <li key={key} className="searchResultModal-result">
                 <section className="section1">
                   <img src={s.iconUrl} />
                   <span>
                     <p className="searchResultModal-result-name">{s.name}</p>
-                    <p>{s.symbol}</p>
+                    <p className="searchResultModal-result-symbol">
+                      {s.symbol}
+                    </p>
                   </span>
                 </section>
-                <section className="section2">{s.price}</section>
+                <section className="section2">
+                  ${Number(s.price).toFixed(4)}
+                </section>
               </li>
             ))}
         </ul>

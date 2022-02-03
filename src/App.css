@@ -26,6 +26,6 @@
 .App-modalActive {
   position: relative;
   padding-top: 65px;
-  height: 100vh;
-  overflow: hidden;
+  max-height: 100vh;
+  /* overflow: hidden; */
 }

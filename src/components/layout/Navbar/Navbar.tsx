@@ -94,7 +94,7 @@ const Navbar = () => {
             <span>API</span>
           </li>
           <li className="navbar-menu-item">
-            <span>CGithub Repository</span>
+            <span>Github Repository</span>
           </li>
           <div className="authButtons">
             <li className="navbar-menu-item">
@@ -130,4 +130,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default React.memo(Navbar);

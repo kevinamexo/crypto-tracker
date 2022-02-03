@@ -59,7 +59,7 @@ const CoinCard: React.FC<CoinCardProps> = ({ category, title }) => {
         src={coinData.iconUrl}
         alt={coinData.name}
       />
-      <p className="coinCard-symbol">{coinData.symbol}</p>
+      <p className="coinCard-symbol">{coinData.name}</p>
       <div className="coinCard-categoryDetail">
         {category === "listedAt" && coinData && coinData.listedAt && (
           <>
@@ -109,4 +109,4 @@ const CoinCard: React.FC<CoinCardProps> = ({ category, title }) => {
   );
 };
 
-export default CoinCard;
+export default React.memo(CoinCard);

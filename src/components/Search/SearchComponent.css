@@ -63,19 +63,23 @@
   border-radius: 50%;
   background-color: var(--primaryColor);
   padding: 10px;
-
   cursor: pointer;
+  width: 44px;
+  height: 44px;
 }
 
 .search-input-min-full .coinPageSearchIcon-min {
   position: absolute;
   color: rgb(128, 128, 128) !important;
   left: 10px;
-  top: 13px;
+  top: 10px;
   padding: 0;
-  border-radius: 0;
-  font-size: 25px;
+  border-radius: 50%;
+  border: 1px solid var(--primaryBorder);
+  font-size: 15px;
   border: none;
+  width: 30px;
+  height: 30px;
 }
 .coinPageSearchIcon-min:hover {
   background-color: var(--lighthover);
@@ -117,4 +121,99 @@
 
 .coinPageSearch-min {
   width: 90%;
+}
+
+.search-input .searchResultsModal {
+  position: absolute;
+  right: 0;
+  left: 0;
+  /* min-height: 100px; */
+  max-height: 400px;
+  background-color: #fff;
+  z-index: -1;
+  overflow-y: auto;
+  padding-top: 20px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border: 1px solid var(--primaryBorder);
+  -webkit-box-shadow: 1px 7px 15px -4px #000000;
+  box-shadow: 1px 7px 15px -4px #000000;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-input-min-full .searchResultsModal {
+  position: absolute;
+  left: -30px;
+  height: 80vh;
+  width: 100vw;
+  padding-top: 10px;
+}
+
+.search-input-min-full .searchResultsModal .searchResultModal-result {
+  padding: 15px 30px;
+}
+.searchResultsModal .searchResultModal-result {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 20px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.searchResultsModal .searchResultModal-result:hover {
+  background-color: rgb(227, 227, 237);
+}
+
+.searchResultsModal .searchResultModal-result .section1 {
+  display: flex;
+  align-items: center;
+}
+
+.searchResultsModal .searchResultModal-result .section1 span {
+  margin-left: 10px;
+}
+.searchResultModal-result-name {
+  font-weight: 600;
+  font-size: 16px;
+  overflow: hidden;
+  max-width: 15ch;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.searchResultsModal .searchResultModal-result .section1 img {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.searchResultModal-result-symbol {
+  font-size: 14px;
+}
+
+.searchResultModal-result .section2 {
+  font-weight: 500;
+  color: rgb(11, 11, 11);
+}
+
+.coinPageSearch {
+  width: 100%;
+  padding: 13px 10px;
+  font-size: 16px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding-left: 55px;
+}
+
+@media screen and (max-width: 297px) {
+  .coinPage {
+    padding: 15px 0px;
+  }
+}
+@media screen and (max-width: 305px) {
+  .minimizedTimePeriods,
+  .cancelMiniSearch {
+    display: none;
+  }
 }

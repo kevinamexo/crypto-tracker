@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
 import { Coin, CoinsResponse, Stats } from "./CoinsResponseTypes";
@@ -13,6 +13,7 @@ import {
   setTimePeriod,
   TableTimePeriod,
   setLoadingSearchResults,
+  setStats,
 } from "../../redux/app/features/tables/assetsTableSlice";
 import { setSearchModal } from "../../redux/app/features/modalsSlice";
 import { RootState } from "../../redux/app/store";
@@ -47,11 +48,9 @@ export interface FetchCoinsOptions {
 }
 
 export type activeParameterType = keyof RankParameter;
-const SEARCH_TABLE_BREAKPOINT: number = 768;
 const Coins: React.FC = () => {
   const [loadingCoins, setLoadingCoins] = useState<boolean | null>(null);
   const [coins, setCoins] = useState<Coin[]>([]);
-  const [stats, setStats] = useState<Stats>({} as Stats);
   const {
     timePeriod,
     activeColumn,
@@ -59,8 +58,9 @@ const Coins: React.FC = () => {
     resultsPerPage,
     assetsTablePage,
     searchValue,
+    stats,
   } = useSelector((state: RootState) => state.assetsTable);
-  const { minimizedSearchActive } = useSelector(
+  const { minimizedSearchActive, searchModal } = useSelector(
     (state: RootState) => state.modals
   );
   const { windowWidth, searchTableBreakpoint } = useSelector(
@@ -129,7 +129,7 @@ const Coins: React.FC = () => {
       .then((response) => {
         console.log(response);
         setCoins(response.data.data.coins);
-        setStats(response.data.data.stats);
+        dispatch(setStats(response.data.data.stats));
         const tableData = response.data.data.coins.map((r) => {
           let tmpObj: Record<string, any> = {};
           tableRows.map((rowName) => {
@@ -151,7 +151,7 @@ const Coins: React.FC = () => {
   useEffect(() => {
     if (!timePeriod) return;
     fetchTableAssets();
-  }, [timePeriod, activeColumn, tableOrder]);
+  }, [timePeriod, activeColumn, tableOrder, assetsTablePage]);
 
   useEffect(() => {
     if (!stats) return;
@@ -172,8 +172,16 @@ const Coins: React.FC = () => {
 
   return (
     <div className="coinsPage">
-      <section className="coinMarketSummary">
-        <div className="header">
+      <section
+        className={`coinMarketSummary${
+          minimizedSearchActive === true && searchModal == false
+            ? "-mini"
+            : minimizedSearchActive === true && searchModal === true
+            ? "-mini-full"
+            : ""
+        }`}
+      >
+        <div className={`header`}>
           {!(
             miniminzeTableAndSearch === true && minimizedSearchActive === true
           ) && (
@@ -187,7 +195,7 @@ const Coins: React.FC = () => {
           )}
           <SearchComponent />
         </div>
-        <div className="globalMarketSummary">
+        {/* <div className="globalMarketSummary">
           <ul className="globalMarketStat">
             <li className="stat">
               <h2>{stats && (stats.totalCoins / 1000).toFixed(2)}k</h2>
@@ -208,7 +216,7 @@ const Coins: React.FC = () => {
               <p>Total Exchanges</p>
             </li>
           </ul>
-        </div>
+        </div> */}
 
         <p className="coinPage-marketSummary__title">
           Market summary - 24 hours
@@ -228,28 +236,32 @@ const Coins: React.FC = () => {
         </ul>
       </section>
       {/* <CoinCard category="24hVolume" /> */}
-      <div className="assets-table-header">
-        <p className="tableTitle"> All assets</p>
-        {miniminzeTableAndSearch === false && (
-          <ul className="tablefilterTimePeriods">
-            {["3H", "1D", "1W", "1M", "1Y"].map((x) => (
-              <li
-                className={`timeLabel${
-                  timePeriod === timeLabelValues[x] ? "-active" : ""
-                }`}
-                onClick={(e) => handleTimeLabelChange(e, x)}
-              >
-                {x}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-      <div className="assets-table">
-        <BasicTable />
-      </div>
+      {minimizedSearchActive === false && (
+        <>
+          <div className="assets-table-header">
+            <p className="tableTitle"> All assets</p>
+            {miniminzeTableAndSearch === false && (
+              <ul className="tablefilterTimePeriods">
+                {["3H", "1D", "1W", "1M", "1Y"].map((x) => (
+                  <li
+                    className={`timeLabel${
+                      timePeriod === timeLabelValues[x] ? "-active" : ""
+                    }`}
+                    onClick={(e) => handleTimeLabelChange(e, x)}
+                  >
+                    {x}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div className="assets-table">
+            <BasicTable />
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
-export default Coins;
+export default React.memo(Coins);

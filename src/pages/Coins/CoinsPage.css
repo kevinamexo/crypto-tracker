@@ -14,69 +14,20 @@
   margin-top: 25px;
 }
 
-.coinMarketSummary .header {
+.coinMarketSummary-mini .globalMarketSummary,
+.coinMarketSummary-mini-full .globalMarketSummary {
+  display: none;
+}
+
+.coinMarketSummary .header,
+.coinMarketSummary-mini .header,
+.coinMarketSummary-mini-full .header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-top: 30px;
+  margin-top: 20px;
 }
-
-.search-input .searchResultsModal {
-  position: absolute;
-  right: 0;
-  left: 0;
-  /* min-height: 100px; */
-  max-height: 400px;
-  background-color: #fff;
-  z-index: -1;
-  overflow-y: auto;
-  padding-top: 20px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border: 1px solid var(--primaryBorder);
-  -webkit-box-shadow: 1px 7px 15px -4px #000000;
-  box-shadow: 1px 7px 15px -4px #000000;
-  display: flex;
-  flex-direction: column;
-}
-
-.searchResultsModal .searchResultModal-result {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.searchResultsModal .searchResultModal-result:hover {
-  background-color: rgb(207, 207, 227);
-}
-
-.searchResultsModal .searchResultModal-result .section1 {
-  display: flex;
-  align-items: center;
-}
-
-.searchResultsModal .searchResultModal-result .section1 span {
-  margin-left: 10px;
-}
-.searchResultModal-result-name {
-  font-weight: 600;
-}
-.searchResultsModal .searchResultModal-result .section1 img {
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.coinPageSearch {
-  width: 100%;
-  padding: 13px 10px;
-  font-size: 16px;
-  border: 1px solid lightgray;
-  border-radius: 5px;
-  padding-left: 55px;
-}
+/* height: 50px; */
 
 .coinMarketSummary .title {
   font-size: 20px;
@@ -112,15 +63,28 @@
   display: flex;
   align-items: center;
 }
+
+.coinMarketSummary-mini .coinPage-marketSummary__title,
+.coinMarketSummary-mini .coinMarketSummary-coins,
+.coinMarketSummary-mini-full .coinPage-marketSummary__title,
+.coinMarketSummary-mini-full .coinMarketSummary-coins {
+  display: none;
+}
+
 .coinPage-marketSummary__title-min {
   color: rgb(57, 57, 57);
   font-size: 20px;
   font-weight: 700;
 }
-
-.MuiTableContainer-root {
+.MuiTableContainer-root,
+.MuiPaper-rounded {
   font-family: "Lato", sans-serif !important;
+  border-radius: 10px;
 }
+.MuiPaper-rounded {
+  border: 1px solid var(--primaryBorder);
+}
+
 .assets-table-header {
   display: flex;
   align-items: center;
@@ -183,5 +147,17 @@
 @media screen and (max-width: 1270px) {
   .coinsPage {
     padding: 15px 30px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .globalMarketSummary {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 201px) {
+  .coinPage {
+    padding: 15px 0px;
   }
 }

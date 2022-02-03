@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { stat } from "fs";
 import { activeParameterType } from "../../../../pages/Coins/Coins";
-import { Coin } from "../../../../pages/Coins/CoinsResponseTypes";
+import { Coin, Stats } from "../../../../pages/Coins/CoinsResponseTypes";
+
 export type TableTimePeriod = "3h" | "24h" | "7d" | "30d" | "1y";
 
 type TableRequestOrder = "asc" | "desc";
@@ -14,8 +15,9 @@ interface TableState {
   resultsPerPage: number;
   assetsTablePage: number;
   loadingSearchResults: boolean | null;
-  searchResults: Partial<Coin>[];
+  searchResults: Array<any>;
   searchValue: string;
+  stats: Stats;
 }
 
 const initialState: TableState = {
@@ -29,6 +31,7 @@ const initialState: TableState = {
   loadingSearchResults: null,
   searchResults: [] as Partial<Coin>[],
   searchValue: "",
+  stats: {} as Stats,
 };
 
 const assetsTableSlice = createSlice({
@@ -66,6 +69,9 @@ const assetsTableSlice = createSlice({
     setSearchValue: (state, action: PayloadAction<string>) => {
       state.searchValue = action.payload;
     },
+    setStats: (state, action: PayloadAction<Stats>) => {
+      state.stats = action.payload;
+    },
   },
 });
 
@@ -80,6 +86,7 @@ export const {
   setLoadingSearchResults,
   setSearchResultsArr,
   setSearchValue,
+  setStats,
 } = assetsTableSlice.actions;
 
 export default assetsTableSlice.reducer;
