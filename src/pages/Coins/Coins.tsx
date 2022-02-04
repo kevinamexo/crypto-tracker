@@ -14,6 +14,8 @@ import {
   TableTimePeriod,
   setLoadingSearchResults,
   setStats,
+  setSearchResultsArr,
+  setMostExpensive,
 } from "../../redux/app/features/tables/assetsTableSlice";
 import { setSearchModal } from "../../redux/app/features/modalsSlice";
 import { RootState } from "../../redux/app/store";
@@ -116,12 +118,44 @@ const Coins: React.FC = () => {
     dispatch(setTimePeriod(timeLabelValues[timeLabel]));
   };
 
+  const fetchMostExpensive = () => {
+    axios
+      .get<CoinsResponse>(fetchCoinOptions.url, {
+        headers: fetchCoinOptions.headers,
+        params: {
+          referenceCurrencyUuid: "yhjMzLPhuIDl",
+          timePeriod: timePeriod,
+          tiers: "1",
+          orderBy: "price",
+          orderDirection: tableOrder,
+          limit: 5,
+          offset: 0,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        // setCoins(response.data.data.coins);
+        // dispatch(setSt(response.data.data.stats));
+        const mostExpensive = response.data.data.coins.map((r) => {
+          return {
+            iconUrl: r.iconUrl,
+            name: r.name,
+            price: r.price,
+            symbol: r.symbol,
+          };
+        });
+        console.log(mostExpensive);
+        dispatch(setSearchResultsArr(mostExpensive));
+
+        // console.log(x);
+        // console.log(x)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const fetchTableAssets = () => {
-    console.log("fetching with parameters:");
-    console.log(assetsTablePage, activeColumn, timePeriod, tableOrder);
-    setLoadingCoins(true);
-    dispatch(setLoadingAssets(true));
-    console.log("loading assets");
     axios
       .get<CoinsResponse>(fetchCoinOptions.url, {
         headers: fetchCoinOptions.headers,
@@ -140,8 +174,7 @@ const Coins: React.FC = () => {
         });
         console.log(tableData);
         dispatch(setTableData(tableData));
-        // console.log(x);
-        // console.log(x)
+        fetchMostExpensive();
       })
       .catch((err) => {
         console.log(err);
@@ -151,6 +184,7 @@ const Coins: React.FC = () => {
   };
   useEffect(() => {
     if (!timePeriod) return;
+    dispatch(setLoadingAssets(true));
     fetchTableAssets();
   }, [timePeriod, activeColumn, tableOrder, assetsTablePage]);
 
@@ -166,9 +200,11 @@ const Coins: React.FC = () => {
     if (numberOfSearchChars === 0) {
       dispatch(setLoadingSearchResults(false));
       dispatch(setSearchModal(false));
+
       fetchTableAssets();
     }
   }, [searchValue]);
+
   ///MINIMIZED MENU
 
   return (

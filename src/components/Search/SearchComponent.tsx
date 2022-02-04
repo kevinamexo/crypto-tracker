@@ -108,7 +108,7 @@ const SearchComponent = () => {
     console.log("HANDLING CLOSING MINI SEARCH");
     dispatch(setSearchModal(false));
     dispatch(setMinimizedSearchActive(false));
-    setSearchValue("");
+    dispatch(setSearchValue(""));
     dispatch(setSearchResultsArr([]));
   }, [searchModal, searchValue]);
   const overrideClipLoader = css`

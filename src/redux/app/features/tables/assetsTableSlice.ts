@@ -18,10 +18,11 @@ interface TableState {
   searchResults: Array<any>;
   searchValue: string;
   stats: Stats;
+  mostExpensive: Array<Object>;
 }
 
 const initialState: TableState = {
-  loadingAssets: null,
+  loadingAssets: false,
   tableData: [] as Record<string, any>[],
   timePeriod: "24h",
   tableOrder: "desc",
@@ -32,6 +33,7 @@ const initialState: TableState = {
   searchResults: [] as Partial<Coin>[],
   searchValue: "",
   stats: {} as Stats,
+  mostExpensive: [],
 };
 
 const assetsTableSlice = createSlice({
@@ -72,6 +74,9 @@ const assetsTableSlice = createSlice({
     setStats: (state, action: PayloadAction<Stats>) => {
       state.stats = action.payload;
     },
+    setMostExpensive: (state, action: PayloadAction<Array<Object>>) => {
+      state.mostExpensive = action.payload;
+    },
   },
 });
 
@@ -87,6 +92,7 @@ export const {
   setSearchResultsArr,
   setSearchValue,
   setStats,
+  setMostExpensive,
 } = assetsTableSlice.actions;
 
 export default assetsTableSlice.reducer;
