@@ -12,6 +12,10 @@ import { Sparklines, SparklinesLine } from "react-sparklines";
 import { Coin } from "./CoinsResponseTypes";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/app/store";
+import "react-loading-skeleton/dist/skeleton.css";
+
+import Skeleton from "react-loading-skeleton";
+
 import axios from "axios";
 import {
   setTableData,
@@ -125,48 +129,62 @@ const BasicTable: React.FC = () => {
             <TableRow key={index}>
               {rowNames.map((rowName, index) => (
                 <TableCell>
-                  <div className="tableValueCell ">
-                    {rowName === "name" && (
-                      <img
-                        className="tableValueCell-logo"
-                        src={row["iconUrl"]}
-                      />
-                    )}
-                    <p
-                      className={
-                        rowName === "name" ? "tableValueCell-value" : ""
-                      }
-                      style={{
-                        fontWeight: `${rowName === "name" ? "700" : "500"}`,
-
-                        color: `${
-                          rowName === "change" && row[rowName] < 0
-                            ? "red"
-                            : rowName === "change" && row[rowName] > 0
-                            ? "green"
-                            : ""
-                        }`,
-                      }}
-                    >
-                      {rowName === "sparkline"
-                        ? null
-                        : rowName === "listedAt"
-                        ? new Date(row[rowName] * 1000).toDateString()
-                        : rowName === "change"
-                        ? `${row[rowName]}%`
-                        : rowName === "price"
-                        ? "$" + NumberFormatter(row[rowName], 3)
-                        : row[rowName] ?? "-"}
-                    </p>
-
-                    {rowName === "sparkline" && (
-                      <Sparklines data={row[rowName]}>
-                        <SparklinesLine
-                          color={row["change"] < 0 ? "red" : "green"}
+                  {loadingAssets === false ? (
+                    <div className="tableValueCell ">
+                      {rowName === "name" && (
+                        <img
+                          className="tableValueCell-logo"
+                          src={row["iconUrl"]}
                         />
-                      </Sparklines>
-                    )}
-                  </div>
+                      )}
+                      <p
+                        className={
+                          rowName === "name" ? "tableValueCell-value" : ""
+                        }
+                        style={{
+                          fontWeight: `${rowName === "name" ? "700" : "500"}`,
+
+                          color: `${
+                            rowName === "change" && row[rowName] < 0
+                              ? "red"
+                              : rowName === "change" && row[rowName] > 0
+                              ? "green"
+                              : ""
+                          }`,
+                        }}
+                      >
+                        {rowName === "sparkline"
+                          ? null
+                          : rowName === "listedAt"
+                          ? new Date(row[rowName] * 1000).toDateString()
+                          : rowName === "change"
+                          ? `${row[rowName]}%`
+                          : rowName === "price"
+                          ? "$" + NumberFormatter(row[rowName], 3)
+                          : row[rowName] ?? "-"}
+                      </p>
+
+                      {rowName === "sparkline" && (
+                        <Sparklines data={row[rowName]}>
+                          <SparklinesLine
+                            color={row["change"] < 0 ? "red" : "green"}
+                          />
+                        </Sparklines>
+                      )}
+                    </div>
+                  ) : (
+                    <Skeleton
+                      width={
+                        rowName === "name"
+                          ? 50
+                          : rowName === "sparkline"
+                          ? 70
+                          : rowName === "marketCap"
+                          ? 80
+                          : 90
+                      }
+                    />
+                  )}
                 </TableCell>
               ))}
             </TableRow>

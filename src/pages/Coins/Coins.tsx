@@ -121,6 +121,7 @@ const Coins: React.FC = () => {
     console.log(assetsTablePage, activeColumn, timePeriod, tableOrder);
     setLoadingCoins(true);
     dispatch(setLoadingAssets(true));
+    console.log("loading assets");
     axios
       .get<CoinsResponse>(fetchCoinOptions.url, {
         headers: fetchCoinOptions.headers,
