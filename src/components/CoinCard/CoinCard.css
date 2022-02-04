@@ -1,5 +1,5 @@
 .coinCard {
-  padding: 15px 15px 35px 15px;
+  padding: 20px 15px 35px 15px;
   border-radius: 10px;
   border: 1px solid var(--primaryBorder);
   cursor: pointer;
@@ -10,7 +10,7 @@
 
 .coinCard-title {
   font-weight: 700;
-  font-size: 14px;
+  font-size: 16 px;
 }
 
 .coinCard-logo {
@@ -33,4 +33,5 @@
 .coinCard-categoryDetail .value {
   color: var(--coinbaseblue);
   margin: 0 5px 0 0;
+  font-size: 18px;
 }

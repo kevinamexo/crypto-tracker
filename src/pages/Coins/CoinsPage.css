@@ -76,6 +76,14 @@
   font-size: 20px;
   font-weight: 700;
 }
+
+.assets-table-header .quickFilters {
+  display: flex;
+  width: 50%;
+  max-width: 300px;
+  justify-content: space-between;
+}
+
 .MuiTableContainer-root,
 .MuiPaper-rounded {
   font-family: "Lato", sans-serif !important;
@@ -93,10 +101,10 @@
 }
 .assets-table-header .tableTitle {
   background-color: #f1f5fe;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--coinbaseblue);
-  padding: 5px 10px;
+  padding: 3px 18px;
   border-radius: 15px;
 }
 .assets-table-header .tablefilterTimePeriods {
@@ -108,7 +116,7 @@
 .assets-table-header .tablefilterTimePeriods .timeLabel {
   margin: 0 20px;
   font-weight: 700;
-  color: rgb(126, 126, 126);
+  color: rgb(101, 101, 101);
   cursor: pointer;
   font-size: 14px;
 }

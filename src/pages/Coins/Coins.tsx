@@ -239,7 +239,11 @@ const Coins: React.FC = () => {
       {minimizedSearchActive === false && (
         <>
           <div className="assets-table-header">
-            <p className="tableTitle"> All assets</p>
+            <div className="quickFilters">
+              <p className="tableTitle"> All assets</p>
+              <p className="tableTitle">Gainers</p>
+              <p className="tableTitle"> Losers</p>
+            </div>
             {miniminzeTableAndSearch === false && (
               <ul className="tablefilterTimePeriods">
                 {["3H", "1D", "1W", "1M", "1Y"].map((x) => (

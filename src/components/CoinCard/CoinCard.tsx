@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./CoinCard.css";
 import { Coin, CoinsResponse } from "../../pages/Coins/CoinsResponseTypes";
+import "react-loading-skeleton/dist/skeleton.css";
+
+import Skeleton from "react-loading-skeleton";
 import {
   activeParameterType,
   FetchCoinsOptions,
@@ -13,7 +16,7 @@ interface CoinCardProps {
 }
 const CoinCard: React.FC<CoinCardProps> = ({ category, title }) => {
   const [coinData, setCoinData] = useState<Coin>({} as Coin);
-  const [loadingCoins, setLoadingCoins] = useState<boolean | null>(null);
+  const [loadingCoin, setLoadingCoin] = useState<boolean | null>(null);
   const [order, setOrder] = useState<string>("desc");
   const [categoryStat, setCategoryStat] = useState<number | null>(null);
   //   const title
@@ -35,7 +38,7 @@ const CoinCard: React.FC<CoinCardProps> = ({ category, title }) => {
     },
   };
   useEffect(() => {
-    setLoadingCoins(true);
+    setLoadingCoin(true);
     axios
       .get<CoinsResponse>(fetchCoinOptions.url, {
         headers: fetchCoinOptions.headers,
@@ -48,63 +51,87 @@ const CoinCard: React.FC<CoinCardProps> = ({ category, title }) => {
       .catch((err) => {
         console.log(err);
       });
-    setLoadingCoins(false);
+    setLoadingCoin(false);
   }, [category]);
 
   return (
     <div className="coinCard">
-      <p className="coinCard-title">{title}</p>
-      <img
-        className="coinCard-logo"
-        src={coinData.iconUrl}
-        alt={coinData.name}
-      />
-      <p className="coinCard-symbol">{coinData.name}</p>
-      <div className="coinCard-categoryDetail">
-        {category === "listedAt" && coinData && coinData.listedAt && (
-          <>
-            <p className="value ">Volume </p>
-            <p>{new Date(coinData.listedAt * 1000).toDateString()}</p>
-          </>
-        )}
-        {category === "24hVolume" && coinData && coinData["24hVolume"] && (
-          <>
-            {
-              <p className="value">
-                {Math.round(Number(coinData["24hVolume"]) / 1000000000)}T{" "}
-              </p>
-            }{" "}
-            <p>Added </p>
-          </>
-        )}
+      {loadingCoin === true ? (
+        <Skeleton width={100} />
+      ) : (
+        <p className="coinCard-title">{title}</p>
+      )}
+      {loadingCoin === true ? (
+        <Skeleton
+          height={30}
+          width={30}
+          borderRadius="50%"
+          style={{ margin: "10px 0" }}
+        />
+      ) : (
+        <img
+          className="coinCard-logo"
+          src={coinData.iconUrl}
+          alt={coinData.name}
+        />
+      )}
+      {loadingCoin === true ? (
+        <Skeleton width={120} />
+      ) : (
+        <p className="coinCard-symbol">{coinData.name}</p>
+      )}
 
-        {category === "marketCap" && coinData && coinData["marketCap"] && (
-          <>
-            {
-              <p className="value">
-                {(Number(coinData["marketCap"]) / 1000000000).toFixed(2)}T{" "}
-              </p>
-            }{" "}
-            <p>cap </p>
-          </>
-        )}
+      {loadingCoin === false ? (
+        <div className="coinCard-categoryDetail">
+          {category === "listedAt" && coinData && coinData.listedAt ? (
+            <>
+              <p className="value ">Listed at </p>
+              <p>{new Date(coinData.listedAt * 1000).toDateString()}</p>
+            </>
+          ) : (
+            <></>
+          )}
+          {category === "24hVolume" && coinData && coinData["24hVolume"] && (
+            <>
+              {
+                <p className="value">
+                  {Math.round(Number(coinData["24hVolume"]) / 1000000000)}T{" "}
+                </p>
+              }{" "}
+              <p>Added </p>
+            </>
+          )}
 
-        {category === "change" && coinData && coinData["change"] && (
-          <>
-            {
-              <p className="value">
-                {(Number(coinData["change"]) / 100).toFixed(2)}%{" "}
-              </p>
-            }{" "}
-            <p>change </p>
-          </>
-        )}
-        {category === "price" && coinData && coinData["price"] && (
-          <>
-            <p className="value">{Number(coinData["price"]).toFixed(2)}</p>
-          </>
-        )}
-      </div>
+          {category === "marketCap" && coinData && coinData["marketCap"] && (
+            <>
+              {
+                <p className="value">
+                  {(Number(coinData["marketCap"]) / 1000000000).toFixed(2)}T{" "}
+                </p>
+              }{" "}
+              <p>cap </p>
+            </>
+          )}
+
+          {category === "change" && coinData && coinData["change"] && (
+            <>
+              {
+                <p className="value">
+                  {(Number(coinData["change"]) / 100).toFixed(2)}%{" "}
+                </p>
+              }{" "}
+              <p>change </p>
+            </>
+          )}
+          {category === "price" && coinData && coinData["price"] && (
+            <>
+              <p className="value">{Number(coinData["price"]).toFixed(2)}</p>
+            </>
+          )}
+        </div>
+      ) : (
+        <Skeleton width={150} style={{ marginTop: "5px" }} />
+      )}
     </div>
   );
 };

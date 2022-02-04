@@ -125,6 +125,9 @@
 .authButtons {
   margin-top: 50px;
 }
+.navbarMenuBtn-signin-secondary:hover {
+  background-color: var(--coinbasebluehover) !important;
+}
 
 @media screen and (max-width: 1270px) {
   .navbar {
